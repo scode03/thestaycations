@@ -10,7 +10,7 @@ const Users = require("../models/Users");
 const fs = require("fs-extra");
 const path = require("path");
 // const { title } = require("process");
-const bcrypt = require('bcryptjs');
+const bcrypt = require("bcryptjs");
 
 module.exports = {
   //Login
@@ -19,30 +19,30 @@ module.exports = {
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
       const alert = { message: alertMessage, status: alertStatus };
-      if(req.session.user == null || req.session.user == undefined){
+      if (req.session.user == null || req.session.user == undefined) {
         res.render("index", {
           alert,
           title: "Staycation | Login",
         });
-    } else {
-        res.redirect('/admin/dashboard');
-    }
+      } else {
+        res.redirect("/admin/dashboard");
+      }
     } catch (error) {
       res.render("admin/signin");
     }
   },
 
-  actionSignin: async(req, res) => {
+  actionSignin: async (req, res) => {
     try {
       const { username, password } = req.body;
-      const user = await Users.findOne({username: username});
-      if(!user){
+      const user = await Users.findOne({ username: username });
+      if (!user) {
         req.flash("alertMessage", "Username Not Found");
         req.flash("alertStatus", "danger");
         res.redirect("/admin/signin");
       }
       const isPasswordMatch = await bcrypt.compare(password, user.password);
-      if(!isPasswordMatch){
+      if (!isPasswordMatch) {
         req.flash("alertMessage", "Wrong Password");
         req.flash("alertStatus", "danger");
         res.redirect("/admin/signin");
@@ -50,11 +50,10 @@ module.exports = {
 
       req.session.user = {
         id: user.id,
-        username: user.username
-      }
+        username: user.username,
+      };
 
-      res.redirect('/admin/dashboard');
-
+      res.redirect("/admin/dashboard");
     } catch (error) {
       res.render("admin/signin");
     }
@@ -68,15 +67,15 @@ module.exports = {
   //Dashboard
   viewDashboard: async (req, res) => {
     try {
-      const member = await Member.find()
-      const booking = await Booking.find()
-      const item = await Item.find()
+      const member = await Member.find();
+      const booking = await Booking.find();
+      const item = await Item.find();
       res.render("admin/dashboard/view_dashboard", {
         title: "Staycation | Dashboard",
         user: req.session.user,
         member,
         booking,
-        item
+        item,
       });
     } catch (error) {
       res.redirect("admin/dashboard");
@@ -95,7 +94,7 @@ module.exports = {
         category,
         alert,
         title: "Staycation | Category",
-        user: req.session.user
+        user: req.session.user,
       });
     } catch (error) {
       res.render("admin/category");
@@ -161,7 +160,7 @@ module.exports = {
         bank,
         alert,
         title: "Staycation | Bank",
-        user: req.session.user
+        user: req.session.user,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -260,7 +259,7 @@ module.exports = {
         item,
         title: "Staycation | Item",
         action: "view",
-        user: req.session.user
+        user: req.session.user,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -278,7 +277,7 @@ module.exports = {
         const newItem = {
           categoryId,
           title,
-          description: desc,
+          desc: desc,
           price,
           city,
         };
@@ -319,7 +318,7 @@ module.exports = {
         item,
         title: "Staycation | Show Image Item",
         action: "show image",
-        user: req.session.user
+        user: req.session.user,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -350,7 +349,7 @@ module.exports = {
         item,
         category,
         action: "edit",
-        user: req.session.user
+        user: req.session.user,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -383,7 +382,7 @@ module.exports = {
         item.title = title;
         item.price = price;
         item.city = city;
-        item.description = desc;
+        item.desc = desc;
         item.categoryId = categoryId;
         await item.save();
         req.flash("alertMessage", "Success Update Item");
@@ -431,7 +430,7 @@ module.exports = {
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
       const alert = { message: alertMessage, status: alertStatus };
-      
+
       const feature = await Feature.find({ itemId: itemId });
       const activity = await Activity.find({ itemId: itemId });
       res.render("admin/item/detail_item/view_detail_item", {
@@ -440,7 +439,7 @@ module.exports = {
         itemId,
         feature,
         activity,
-        user: req.session.user
+        user: req.session.user,
       });
     } catch (error) {
       req.flash("alertMessage", `${error.message}`);
@@ -513,10 +512,10 @@ module.exports = {
     const { id, itemId } = req.params;
     try {
       const feature = await Feature.findOne({ _id: id });
-      const item = await Item.findOne({ _id: itemId }).populate('featureId');
-      for (let i = 0; i < item.featureId.length; i++){
-        if(item.featureId[i]._id.toString() === feature._id.toString()){
-          item.featureId.pull({_id: feature._id});
+      const item = await Item.findOne({ _id: itemId }).populate("featureId");
+      for (let i = 0; i < item.featureId.length; i++) {
+        if (item.featureId[i]._id.toString() === feature._id.toString()) {
+          item.featureId.pull({ _id: feature._id });
           await item.save();
         }
       }
@@ -596,10 +595,10 @@ module.exports = {
     const { id, itemId } = req.params;
     try {
       const activity = await Activity.findOne({ _id: id });
-      const item = await Item.findOne({ _id: itemId }).populate('activityId');
-      for (let i = 0; i < item.activityId.length; i++){
-        if(item.activityId[i]._id.toString() === activity._id.toString()){
-          item.activityId.pull({_id: activity._id});
+      const item = await Item.findOne({ _id: itemId }).populate("activityId");
+      for (let i = 0; i < item.activityId.length; i++) {
+        if (item.activityId[i]._id.toString() === activity._id.toString()) {
+          item.activityId.pull({ _id: activity._id });
           await item.save();
         }
       }
@@ -619,47 +618,47 @@ module.exports = {
   viewBooking: async (req, res) => {
     try {
       const booking = await Booking.find()
-      .populate('memberId')
-      .populate('bankId');
+        .populate("memberId")
+        .populate("bankId");
 
       // console.log(booking)
       res.render("admin/booking/view_booking", {
         title: "Staycation | Booking",
         user: req.session.user,
-        booking
+        booking,
       });
     } catch (error) {
-      res.redirect('/admin/booking');
+      res.redirect("/admin/booking");
     }
   },
 
   showDetailBooking: async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
       const alertMessage = req.flash("alertMessage");
       const alertStatus = req.flash("alertStatus");
       const alert = { message: alertMessage, status: alertStatus };
 
-      const booking = await Booking.findOne({ _id: id})
-      .populate('memberId')
-      .populate('bankId')
+      const booking = await Booking.findOne({ _id: id })
+        .populate("memberId")
+        .populate("bankId");
 
       res.render("admin/booking/show_detail_booking", {
         title: "Staycation | Detail Booking",
         user: req.session.user,
         booking,
-        alert
+        alert,
       });
     } catch (error) {
-      res.redirect('/admin/booking');
+      res.redirect("/admin/booking");
     }
   },
 
   actionAccepted: async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
-      const booking = await Booking.findOne({_id: id});
-      booking.payments.status = 'Accepted';
+      const booking = await Booking.findOne({ _id: id });
+      booking.payments.status = "Accepted";
       await booking.save();
       req.flash("alertMessage", "Payment Confirmation Accepted");
       req.flash("alertStatus", "warning");
@@ -670,10 +669,10 @@ module.exports = {
   },
 
   actionRejected: async (req, res) => {
-    const {id} = req.params;
+    const { id } = req.params;
     try {
-      const booking = await Booking.findOne({_id: id});
-      booking.payments.status = 'Rejected';
+      const booking = await Booking.findOne({ _id: id });
+      booking.payments.status = "Rejected";
       await booking.save();
       req.flash("alertMessage", "Payment Confirmation Rejected");
       req.flash("alertStatus", "warning");
