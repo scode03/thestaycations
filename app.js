@@ -11,7 +11,9 @@ const cors = require("cors");
 //Import Mongoose
 const mongoose = require("mongoose");
 
-mongoose.connect("mongodb+srv://scode03:ZwEr2wrWefVnTGiq@cluster0.5cjymuw.mongodb.net/db_staycation?retryWrites=true&w=majority");
+mongoose.connect(
+  "mongodb+srv://thevhenz:bwamern@cluster0.quqygo9.mongodb.net/db_staycation?retryWrites=true&w=majority"
+);
 // mongoose.connect("mongodb+srv://scode03:ZwEr2wrWefVnTGiq@cluster0.5cjymuw.mongodb.net/db_staycation?retryWrites=true&w=majority", {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true,
